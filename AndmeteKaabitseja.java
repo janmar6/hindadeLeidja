@@ -1,5 +1,6 @@
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
@@ -14,27 +15,32 @@ public class AndmeteKaabitseja {
 
         int resStatus = connection.getResponseCode();
 
+        // Open a connection to the URL
+        InputStream inputStream = urlObject.openStream();
+
         if(resStatus == 200){
-            Scanner scanner = new Scanner(connection.getInputStream());
-            String regex = "\"impressions\": \\[.*?]";
+            // Read the content of the HTML page
+            Scanner scanner = new Scanner(inputStream);
+            scanner.useDelimiter("\\Z");
+            String htmlContent = scanner.next();
+
+            // Close the scanner and input stream
+            scanner.close();
+            inputStream.close();
+
+            // Define the regex pattern to match the JSON data
+//            String regex = "\"impressions\": \\[.*?]";
+            String regex = "\"impressions\"\\s*:\\s*\\[(?s)(.*?)\\]";
             Pattern pattern = Pattern.compile(regex);
 
-            scanner.useDelimiter("\\Z");
-            String content = scanner.next();
-            System.out.println(content);
+            // Match the pattern against the HTML content
+            Matcher matcher = pattern.matcher(htmlContent);
 
-//            Matcher matcher = pattern.matcher(content);
-//
-//            boolean matchFound = matcher.find();
-//
-//            if(matchFound) {
-//                System.out.println(matcher.group());
-//            } else {
-//                System.out.println("Match not found");
-//            }
-
-            scanner.close();
-
+            // Extract and print the JSON data
+            while (matcher.find()) {
+                String jsonData = matcher.group();
+                System.out.println(jsonData);
+            }
 
 
         } else {
