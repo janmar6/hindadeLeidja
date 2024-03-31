@@ -30,7 +30,7 @@ public class AndmeteKaabitseja {
 
             // Define the regex pattern to match the JSON data
 //            String regex = "\"impressions\": \\[.*?]";
-            String regex = "\"impressions\"\\s*:\\s*\\[(?s)(.*?)\\]";
+            String regex = "\"impressions\"\\s*:\\s*\\[(?s)(.*?)]";
             Pattern pattern = Pattern.compile(regex);
 
             // Match the pattern against the HTML content
@@ -41,6 +41,7 @@ public class AndmeteKaabitseja {
                 String jsonData = matcher.group();
                 System.out.println(jsonData);
             }
+            
 
 
         } else {
